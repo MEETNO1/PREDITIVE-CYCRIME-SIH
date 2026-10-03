@@ -1,14 +1,29 @@
-CYBERINTEL Predictive Cybercrime Prototype
+# CYBERINTEL — Predictive Cybercrime Intelligence Prototype
 
-DEPLOYMENT
-1. Upload the CONTENTS of this folder to your static hosting service.
-2. The entry file MUST be named index.html.
-3. No build command is required.
-4. No framework is required.
+SIH 2026 demo prototype.
 
-NETLIFY: Deploy this folder as a static site.
-VERCEL: Import the folder/repository as a static project; leave Build Command empty.
-GITHUB PAGES: Put index.html in the repository root and enable Pages from the root branch/folder.
-CLOUDFLARE PAGES: Framework preset = None; Build command empty; output directory = / (or the project root as supported by the UI).
+## Run
+Open `index.html` in Chrome/Edge/Firefox.
 
-The prototype is self-contained and uses demo data only.
+
+## Modules
+- Command Center
+- <img width="1592" height="908" alt="image" src="https://github.com/user-attachments/assets/10eaa2a5-b3c5-4245-b5b2-39a631965c64" />
+
+- Risk Alerts
+- <img width="1608" height="753" alt="image" src="https://github.com/user-attachments/assets/ef8abe30-2362-4709-9c0a-0a572e9e5574" />
+
+- Graph Intelligence
+- <img width="1917" height="917" alt="image" src="https://github.com/user-attachments/assets/1016fc8b-0ff4-4cce-9725-a815aa1fd49f" />
+
+- Predictive Risk Engine
+- <img width="1917" height="915" alt="image" src="https://github.com/user-attachments/assets/ba1a9dcb-7b2a-4915-8b09-fe7c71280454" />
+
+- Case Management
+- <img width="1917" height="901" alt="image" src="https://github.com/user-attachments/assets/75350d77-b3c9-4c30-8f2d-127930885b94" />
+
+- Synthetic event simulation
+- Explainable risk factors
+
+## Important
+This is a front-end demonstration using synthetic/demo data. Risk scores are prioritisation signals and are not proof of criminal activity. A production system would require validated datasets, privacy controls, model governance, access controls, auditability and investigator review.
