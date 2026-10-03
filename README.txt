@@ -2,6 +2,7 @@
 
 SIH 2026 demo prototype.
 
+
 ## Run
 Open `index.html` in Chrome/Edge/Firefox.
 
