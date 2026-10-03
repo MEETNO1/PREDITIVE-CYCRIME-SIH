@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBERINTEL — Predictive Cybercrime Intelligence</title>
+<style>
+:root{
+  --bg:#07101f; --panel:#0d192b; --panel2:#111f34; --line:#21334d;
+  --text:#eef5ff; --muted:#8fa4bf; --cyan:#22d3ee; --blue:#3b82f6;
+  --green:#34d399; --yellow:#fbbf24; --red:#fb7185; --purple:#a78bfa;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 75% 10%,#102544 0,#07101f 35%,#050b15 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,input,select{font:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:rgba(7,14,27,.92);border-right:1px solid var(--line);padding:22px 15px;position:fixed;inset:0 auto 0 0;z-index:5}
+.brand{display:flex;gap:11px;align-items:center;margin:4px 10px 28px}
+.logo{width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;font-weight:900;color:#03111e;box-shadow:0 0 28px #22d3ee33}
+.brand b{font-size:16px;letter-spacing:1px}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:3px;letter-spacing:1.5px}
+.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:var(--muted);padding:12px 13px;text-align:left;border-radius:10px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.nav button:hover,.nav button.active{background:#12243b;color:var(--text)}.nav button.active{box-shadow:inset 3px 0 var(--cyan)}
+.side-note{position:absolute;bottom:20px;left:18px;right:18px;padding:13px;border:1px solid var(--line);border-radius:12px;background:#0b1728;font-size:10px;color:var(--muted);line-height:1.5}
+.main{margin-left:245px;width:calc(100% - 245px);padding:22px 28px 50px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.crumb{color:var(--muted);font-size:12px}.crumb b{color:var(--text)}
+.top-actions{display:flex;gap:9px}.btn{border:1px solid var(--line);background:#0d1b2f;color:var(--text);padding:9px 13px;border-radius:9px;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#0e7490,#2563eb);border:0}.btn:hover{filter:brightness(1.12)}
+.page{display:none}.page.active{display:block}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;margin:10px 0 22px}.hero h1{font-size:28px;margin:0 0 7px}.hero p{margin:0;color:var(--muted);font-size:13px}
+.live{display:flex;align-items:center;gap:7px;color:var(--green);font-size:11px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.card{background:linear-gradient(180deg,#0e1b2d,#0a1626);border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 10px 30px #0002}
+.metric{display:flex;justify-content:space-between;align-items:flex-start}.metric .ico{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:#12304b;color:var(--cyan)}
+.metric .num{font-size:27px;font-weight:800;margin-top:12px}.metric .lbl{font-size:11px;color:var(--muted);margin-top:4px}.trend{font-size:10px;color:var(--green);margin-top:10px}
+.layout2{display:grid;grid-template-columns:1.35fr .8fr;gap:14px;margin-top:14px}.layout3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px}
+.cardhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.cardhead h3{font-size:13px;margin:0}.cardhead span{font-size:10px;color:var(--muted)}
+.chart{height:215px;position:relative;overflow:hidden}.bars{display:flex;height:170px;align-items:flex-end;gap:10px;padding:15px 12px 25px;border-bottom:1px solid var(--line);border-left:1px solid var(--line)}
+.bar{flex:1;background:linear-gradient(180deg,var(--cyan),#155e75);border-radius:5px 5px 0 0;min-height:12px;position:relative;cursor:pointer}.bar:hover{filter:brightness(1.2)}.bar i{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-style:normal;color:var(--muted);font-size:9px}.axis{position:absolute;left:0;top:8px;color:#526a86;font-size:9px;display:grid;gap:28px}
+.alerts{display:grid;gap:8px}.alert{padding:11px;border:1px solid var(--line);border-radius:10px;background:#0b1727;cursor:pointer}.alert:hover{border-color:#315274}.alerttop{display:flex;justify-content:space-between;font-size:11px}.risk{font-weight:800}.r-high{color:var(--red)}.r-med{color:var(--yellow)}.r-low{color:var(--green)}.alert small{color:var(--muted);display:block;margin-top:5px;font-size:9px}.tag{font-size:9px;padding:4px 7px;border-radius:20px;background:#16283e;color:#9db4cf}
+table{width:100%;border-collapse:collapse;font-size:10px}th{text-align:left;color:#7087a2;font-weight:600;padding:10px;border-bottom:1px solid var(--line)}td{padding:11px 10px;border-bottom:1px solid #17263a;color:#dce7f4}tr:hover td{background:#0f1d30}
+.pill{padding:4px 8px;border-radius:20px;font-size:9px}.pill.red{background:#3a1721;color:#fb8ba0}.pill.yellow{background:#392d13;color:#ffd56a}.pill.green{background:#123326;color:#62e5ad}
+.graph{height:290px;background:radial-gradient(circle at center,#102b43,#091525 65%);border:1px solid var(--line);border-radius:12px;position:relative;overflow:hidden}
+.graph svg{width:100%;height:100%}.node{cursor:pointer}.node circle{stroke:#07101f;stroke-width:3}.node text{fill:#dce7f4;font-size:9px;text-anchor:middle}.edge{stroke:#38506d;stroke-width:1.2;opacity:.75}.edge.hot{stroke:var(--red);stroke-width:2.5}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:10px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;background:#091526;border:1px solid var(--line);color:var(--text);padding:10px;border-radius:8px;outline:none}.field input:focus,.field select:focus{border-color:var(--cyan)}
+.scorebox{margin-top:14px;padding:18px;border-radius:12px;background:#091628;border:1px solid var(--line);text-align:center}.score{font-size:42px;font-weight:900}.meter{height:9px;background:#1a2940;border-radius:9px;overflow:hidden;margin:12px 0}.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));transition:width .7s}
+.reason{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #17263a;font-size:10px}.reason b{color:var(--cyan)}
+.case{display:grid;grid-template-columns:1fr .75fr;gap:14px}.casehead{display:flex;justify-content:space-between}.caseid{font-size:19px;font-weight:800}.evidence{display:grid;gap:8px}.evi{padding:10px;background:#0a1727;border:1px solid var(--line);border-radius:9px;font-size:10px}.evi b{color:var(--cyan)}
+.toast{position:fixed;right:25px;bottom:25px;background:#10243a;border:1px solid #315274;color:white;padding:12px 15px;border-radius:10px;display:none;z-index:20;box-shadow:0 10px 30px #0007;font-size:11px}
+.modal{position:fixed;inset:0;background:#020711aa;display:none;place-items:center;z-index:15}.modalbox{width:min(620px,90vw);background:#0d1a2c;border:1px solid var(--line);border-radius:16px;padding:20px}.modalbox h3{margin:0 0 8px}.modalbox p{color:var(--muted);font-size:11px;line-height:1.6}
+@media(max-width:1000px){.sidebar{width:70px}.brand div:not(.logo),.brand small,.nav button span,.side-note{display:none}.brand{margin-left:0}.main{margin-left:70px;width:calc(100% - 70px)}.grid4{grid-template-columns:repeat(2,1fr)}.layout2,.layout3,.case{grid-template-columns:1fr}}
+@media(max-width:650px){.main{padding:15px}.grid4{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.hero{display:block}.top-actions{margin-top:10px}}
+
+.landing,.login{position:fixed;inset:0;z-index:50;background:#050b15;color:#eef5ff}
+.landing{overflow:hidden;background:radial-gradient(circle at 72% 35%,#103457 0,#071321 32%,#050b15 72%)}
+.land-grid{position:absolute;inset:0;background-image:linear-gradient(#16314c33 1px,transparent 1px),linear-gradient(90deg,#16314c33 1px,transparent 1px);background-size:55px 55px}
+.land-glow{position:absolute;width:550px;height:550px;right:2%;top:8%;border-radius:50%;background:#22d3ee0d;filter:blur(30px)}
+.land-nav{height:75px;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+.land-badge{font-size:9px;letter-spacing:1.5px;color:#76f1c0;border:1px solid #245440;padding:8px 11px;border-radius:20px;background:#0b201a}.land-badge .dot{display:inline-block;margin-right:7px}
+.land-content{position:relative;z-index:2;display:grid;grid-template-columns:1fr .8fr;gap:5%;align-items:center;max-width:1180px;margin:6vh auto 4vh;padding:0 30px}
+.eyebrow{color:#22d3ee;font-size:10px;letter-spacing:2px;font-weight:800;margin-bottom:18px}
+.land-copy h1{font-size:58px;line-height:.98;margin:0 0 20px;letter-spacing:-2px}.land-copy h1 span{color:#22d3ee}.land-copy p{font-size:16px;color:#8fa4bf;line-height:1.7;max-width:620px}
+.land-actions{display:flex;gap:10px;margin-top:25px}.hero-btn{padding:13px 18px}.land-points{display:flex;gap:18px;margin-top:25px;color:#a9bbd0;font-size:10px}
+.hero-console{height:365px;border:1px solid #28425e;border-radius:20px;background:#091525dd;box-shadow:0 30px 80px #0008;overflow:hidden;transform:perspective(900px) rotateY(-4deg);animation:floatConsole 5s ease-in-out infinite}
+@keyframes floatConsole{50%{transform:perspective(900px) rotateY(2deg) translateY(-8px)}}
+.console-top,.console-foot{display:flex;justify-content:space-between;padding:14px 17px;font-size:9px;color:#728ba6;letter-spacing:1px}.console-foot{border-top:1px solid #1e3047}.console-foot b,.console-foot em{color:#fb7185}.console-foot em{font-style:normal}
+.console-map{height:285px;position:relative;background:radial-gradient(circle at center,#0d2942,#07111f 70%)}.console-map svg{position:absolute;inset:0;width:100%;height:100%}.console-map line{stroke:#22d3ee66;stroke-width:1.2}
+.mini-node{position:absolute;z-index:2;padding:8px 10px;border:1px solid #2d5877;background:#0c2137;border-radius:8px;font-size:9px;box-shadow:0 0 20px #22d3ee22}.n1{left:18%;top:30%;border-color:#fb7185;color:#fb7185}.n2{left:47%;top:44%;color:#22d3ee}.n3{right:14%;top:23%;color:#fbbf24}
+.pulse{position:absolute;border:1px solid #22d3ee44;border-radius:50%;animation:pulse 2.4s infinite}.p1{left:10%;top:19%;width:90px;height:90px}.p2{left:40%;top:33%;width:110px;height:110px;animation-delay:.7s}.p3{right:6%;top:12%;width:140px;height:140px;animation-delay:1.3s}@keyframes pulse{0%,100%{transform:scale(.75);opacity:.1}50%{transform:scale(1.1);opacity:.6}
+}
+.land-stats{position:relative;z-index:2;max-width:920px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #1c3046;border-bottom:1px solid #1c3046;padding:20px 0}.land-stats div{text-align:center;border-right:1px solid #1c3046}.land-stats div:last-child{border:0}.land-stats b{display:block;font-size:22px}.land-stats span{display:block;color:#7189a5;font-size:9px;margin-top:4px}.land-footer{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#425a74;font-size:8px;letter-spacing:1px}
+.login{display:none;place-items:center;background:radial-gradient(circle at 50% 35%,#102944,#050b15 60%)}.login-card{width:390px;background:#0c192b;border:1px solid #29415c;border-radius:18px;padding:27px;box-shadow:0 25px 80px #0009}.login-card h2{margin:24px 0 7px;font-size:24px}.login-card>p{color:#8fa4bf;font-size:11px;margin:0 0 20px}
+@keyframes dashMove{to{stroke-dashoffset:-30}} @keyframes nodePulse{50%{opacity:.05;transform:scale(1.15)}}
+@media(max-width:850px){.land-content{grid-template-columns:1fr}.hero-console{display:none}.land-copy h1{font-size:44px}.land-stats{margin:30px 20px 0}.land-points{flex-wrap:wrap}.land-footer{display:none}}
+
+</style>
+</head>
+<body>
+
+<div id="landing" class="landing">
+  <div class="land-grid"></div><div class="land-glow"></div>
+  <div class="land-nav">
+    <div class="brand"><div class="logo">CI</div><div><b>CYBERINTEL</b><small>PREDICTIVE SECURITY</small></div></div>
+    <div class="land-badge"><i class="dot"></i> INTELLIGENCE FABRIC ONLINE</div>
+  </div>
+  <div class="land-content">
+    <div class="land-copy">
+      <div class="eyebrow">SIH 2026 • PREDICTIVE CYBERCRIME INTELLIGENCE</div>
+      <h1>See the signal<br><span>before the cash-out.</span></h1>
+      <p>Connect transaction behaviour, entity relationships and anomaly signals into one explainable investigator workspace.</p>
+      <div class="land-actions"><button class="btn primary hero-btn" onclick="showLogin()">Launch Intelligence Center →</button><button class="btn" onclick="demoLogin()">View Live Demo</button></div>
+      <div class="land-points"><span>◈ Graph intelligence</span><span>✦ Predictive scoring</span><span>⚡ Event simulation</span></div>
+    </div>
+    <div class="hero-console">
+      <div class="console-top"><span>CYBERINTEL / LIVE STREAM</span><span class="live"><i class="dot"></i> ONLINE</span></div>
+      <div class="console-map">
+        <div class="pulse p1"></div><div class="pulse p2"></div><div class="pulse p3"></div>
+        <div class="mini-node n1">A-1042</div><div class="mini-node n2">D-77</div><div class="mini-node n3">CASH-7</div>
+        <svg viewBox="0 0 500 280"><line x1="120" y1="100" x2="250" y2="135"/><line x1="250" y1="135" x2="390" y2="75"/><line x1="250" y1="135" x2="370" y2="220"/><line x1="120" y1="100" x2="110" y2="215"/></svg>
+      </div>
+      <div class="console-foot"><b>RISK EVENT</b><span>Entity A-1042 • Score 92</span><em>HIGH</em></div>
+    </div>
+  </div>
+  <div class="land-stats"><div><b>128</b><span>Open alerts</span></div><div><b>17</b><span>Linked clusters</span></div><div><b>9</b><span>Cash-out signals</span></div><div><b>0.88</b><span>Prototype PR-AUC</span></div></div>
+  <div class="land-footer">DEMO DATA • HUMAN REVIEW REQUIRED • RISK SCORE ≠ PROOF OF CRIMINAL ACTIVITY</div>
+</div>
+<div id="login" class="login"><div class="login-card">
+  <div class="brand"><div class="logo">CI</div><div><b>CYBERINTEL</b><small>SECURE ACCESS</small></div></div>
+  <h2>Investigator sign in</h2><p>Enter demo credentials to access the intelligence center.</p>
+  <div class="field"><label>Investigator ID</label><input id="loginId" value="SIH-INV-2047"></div>
+  <div class="field"><label>Access key</label><input id="loginPass" type="password" value="cyberintel"></div>
+  <button class="btn primary" style="width:100%;margin-top:15px" onclick="enterApp()">Authenticate & Enter</button>
+  <button class="btn" style="width:100%;margin-top:8px" onclick="hideLogin()">← Back</button>
+  <small style="display:block;margin-top:15px;color:#7087a2;text-align:center">Demo mode • no credentials are transmitted</small>
+</div></div>
+
+<div class="app" id="appRoot">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">CI</div><div><b>CYBERINTEL</b><small>PREDICTIVE SECURITY</small></div></div>
+  <nav class="nav">
+    <button class="active" data-page="overview">◈ <span>Command Center</span></button>
+    <button data-page="alerts">⚠ <span>Risk Alerts</span></button>
+    <button data-page="graph">◎ <span>Graph Intelligence</span></button>
+    <button data-page="predict">✦ <span>Predictive Engine</span></button>
+    <button data-page="cases">▣ <span>Case Management</span></button>
+  </nav>
+  <div class="side-note"><b style="color:#22d3ee">SIH 2026 PROTOTYPE</b><br>Decision-support system using synthetic/demo data. A risk score is not proof of criminal activity.</div>
+</aside>
+
+<main class="main">
+  <div class="top"><div class="crumb">CYBERINTEL / <b id="crumb">Command Center</b></div><div class="top-actions"><button class="btn" onclick="simulate()">⚡ Simulate Event</button><button class="btn primary" onclick="toast('Live monitoring enabled')">● LIVE MONITOR</button></div></div>
+
+  <section id="overview" class="page active">
+    <div class="hero"><div><h1>Predictive Cybercrime Command Center</h1><p>Detect suspicious behaviour, connect hidden entities and prioritise cash-out risk before losses escalate.</p></div><div class="live"><i class="dot"></i> Streaming intelligence</div></div>
+    <div class="grid4">
+      <div class="card metric"><div><div class="num" id="mAlerts">128</div><div class="lbl">Open risk alerts</div><div class="trend">↑ 12% vs last window</div></div><div class="ico">!</div></div>
+      <div class="card metric"><div><div class="num">34</div><div class="lbl">Critical entities</div><div class="trend">↑ 5 new today</div></div><div class="ico">◆</div></div>
+      <div class="card metric"><div><div class="num">17</div><div class="lbl">Suspicious clusters</div><div class="trend">↑ 3 linked groups</div></div><div class="ico">◎</div></div>
+      <div class="card metric"><div><div class="num">9</div><div class="lbl">Cash-out signals</div><div class="trend">↑ 2 high velocity</div></div><div class="ico">↯</div></div>
+    </div>
+    <div class="layout2">
+      <div class="card"><div class="cardhead"><h3>Risk signal volume</h3><span>Last 12 time windows</span></div>
+        <div class="chart"><div class="axis">HIGH<br><br>MED<br><br>LOW</div><div class="bars" id="bars"></div></div>
+      </div>
+      <div class="card"><div class="cardhead"><h3>Priority queue</h3><span>Click an alert</span></div><div class="alerts" id="miniAlerts"></div></div>
+    </div>
+    <div class="layout3">
+      <div class="card"><div class="cardhead"><h3>Detection mix</h3><span>Current window</span></div><div style="font-size:10px;color:#8fa4bf;line-height:2.2">Graph anomalies <b style="float:right;color:#a78bfa">38%</b><br>Velocity anomalies <b style="float:right;color:#22d3ee">27%</b><br>Rule evidence <b style="float:right;color:#fbbf24">21%</b><br>Device linkage <b style="float:right;color:#34d399">14%</b></div></div>
+      <div class="card"><div class="cardhead"><h3>Model health</h3><span>Prototype</span></div><div style="font-size:11px;line-height:2.5">Precision <b style="float:right;color:#34d399">0.91</b><br>Recall <b style="float:right;color:#22d3ee">0.84</b><br>PR-AUC <b style="float:right;color:#a78bfa">0.88</b></div></div>
+      <div class="card"><div class="cardhead"><h3>System status</h3><span>All services</span></div><div style="font-size:10px;line-height:2.2">Event ingestion <b style="float:right;color:#34d399">● Online</b><br>Graph engine <b style="float:right;color:#34d399">● Online</b><br>Risk API <b style="float:right;color:#34d399">● Online</b><br>Case service <b style="float:right;color:#34d399">● Online</b></div></div>
+    </div>
+  </section>
+
+  <section id="alerts" class="page">
+    <div class="hero"><div><h1>Risk Alerts</h1><p>Explainable, evidence-backed alerts for investigator triage.</p></div><button class="btn primary" onclick="filterAlerts()">Filter: High Risk</button></div>
+    <div class="card"><div class="cardhead"><h3>Alert queue</h3><span id="alertCount">8 active signals</span></div>
+      <table><thead><tr><th>ENTITY</th><th>RISK</th><th>PRIMARY SIGNAL</th><th>CONNECTED ENTITIES</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="alertTable"></tbody></table>
+    </div>
+  </section>
+
+  <section id="graph" class="page">
+    <div class="hero"><div><h1>Graph Intelligence</h1><p>Visualise relationships across accounts, devices, beneficiaries and cash-out nodes.</p></div><span class="tag">17 clusters detected</span></div>
+    <div class="layout2">
+      <div class="card"><div class="cardhead"><h3>Entity relationship graph</h3><span>Cluster: C-017</span></div><div class="graph" id="graphBox"></div></div>
+      <div class="card"><div class="cardhead"><h3>Cluster intelligence</h3><span>Evidence</span></div>
+        <div class="evidence">
+          <div class="evi"><b>Cluster size</b><br>14 accounts • 7 devices • 23 counterparties</div>
+          <div class="evi"><b>Flow pattern</b><br>High fan-in followed by rapid fan-out across newly linked accounts.</div>
+          <div class="evi"><b>Common signal</b><br>Three accounts share device fingerprint and beneficiary pattern.</div>
+          <div class="evi"><b>Cash-out proximity</b><br>Two entities show short time-to-withdrawal behaviour.</div>
+          <button class="btn primary" onclick="openCase('C-017')">Create investigation case</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="predict" class="page">
+    <div class="hero"><div><h1>Predictive Risk Engine</h1><p>Test a hypothetical entity profile and see how signals combine into a prioritisation score.</p></div></div>
+    <div class="layout2">
+      <div class="card">
+        <div class="cardhead"><h3>Entity / event inputs</h3><span>Demo simulator</span></div>
+        <div class="formgrid">
+          <div class="field"><label>Transaction velocity</label><input id="velocity" type="number" value="82" min="0" max="100"></div>
+          <div class="field"><label>Amount deviation</label><input id="amount" type="number" value="74" min="0" max="100"></div>
+          <div class="field"><label>New counterparties</label><input id="counter" type="number" value="68" min="0" max="100"></div>
+          <div class="field"><label>Graph exposure</label><input id="graphRisk" type="number" value="86" min="0" max="100"></div>
+          <div class="field"><label>Device linkage</label><input id="device" type="number" value="71" min="0" max="100"></div>
+          <div class="field"><label>Cash-out proximity</label><input id="cashout" type="number" value="90" min="0" max="100"></div>
+        </div>
+        <button class="btn primary" style="margin-top:15px;width:100%" onclick="calculate()">Run predictive analysis</button>
+      </div>
+      <div class="card">
+        <div class="cardhead"><h3>Prediction output</h3><span>Human review required</span></div>
+        <div class="scorebox"><div class="score" id="score">—</div><div id="tier" style="font-size:11px;color:#8fa4bf">Run analysis</div><div class="meter"><span id="meter"></span></div><div id="summary" style="font-size:10px;color:#8fa4bf">The engine combines behavioural, graph and transaction signals.</div></div>
+        <div id="reasons" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cases" class="page">
+    <div class="hero"><div><h1>Case Management</h1><p>Move from alert → evidence → review → case outcome.</p></div><div style="display:flex;gap:8px"><button class="btn" onclick="openCaseList()">▤ All 15 Cases</button><button class="btn primary" onclick="openCase('CASE-2026-041')">Open active case</button></div></div>
+    <div class="case">
+      <div class="card"><div class="casehead"><div><div class="caseid">CASE-2026-041</div><span class="tag">Priority: HIGH</span></div><button class="btn" onclick="toast('Case exported for review')">Export</button></div>
+        <div style="margin:18px 0;color:#8fa4bf;font-size:11px">Entity <b style="color:#eef5ff">A-1042</b> • Cluster <b style="color:#eef5ff">C-017</b> • Created 03 Oct 2026</div>
+        <div class="evidence">
+          <div class="evi"><b>Signal 01</b> — Rapid transaction velocity over a short window.</div>
+          <div class="evi"><b>Signal 02</b> — Multiple new counterparties connected to the entity.</div>
+          <div class="evi"><b>Signal 03</b> — Shared device linkage with other high-risk entities.</div>
+          <div class="evi"><b>Signal 04</b> — Cash-out proximity increased after fan-in activity.</div>
+        </div>
+      </div>
+      <div class="card"><div class="cardhead"><h3>Investigation checklist</h3><span>4 / 6</span></div>
+        <div id="checks"></div>
+        <button class="btn primary" style="width:100%;margin-top:12px" onclick="toast('Case status updated to Investigator Review')">Move to investigator review</button>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal" onclick="if(event.target===this)this.style.display='none'"><div class="modalbox"><h3 id="modalTitle">Investigation</h3><p id="modalText"></p><button class="btn primary" onclick="document.getElementById('modal').style.display='none'">Continue</button></div></div>
+
+<script>
+const alerts=[
+["A-1042",92,"Rapid fan-out + cash-out","8","Review","red"],
+["A-8871",86,"Shared device cluster","6","Review","red"],
+["A-5520",78,"New counterparties","4","Queued","yellow"],
+["A-2308",71,"Velocity anomaly","3","Queued","yellow"],
+["A-7712",68,"Beneficiary overlap","5","Queued","yellow"],
+["A-1904",54,"Amount deviation","2","Monitoring","green"],
+["A-4410",49,"Device novelty","2","Monitoring","green"],
+["A-9018",43,"Peer deviation","1","Monitoring","green"]
+];
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200)}
+function go(page){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ document.getElementById(page).classList.add('active');
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+ document.getElementById('crumb').textContent={overview:'Command Center',alerts:'Risk Alerts',graph:'Graph Intelligence',predict:'Predictive Engine',cases:'Case Management'}[page];
+}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function renderBars(){
+ const vals=[38,52,45,61,49,73,58,67,81,65,91,76];
+ const bars=document.getElementById('bars');
+ vals.forEach((v,i)=>{let d=document.createElement('div');d.className='bar';d.style.height=v+'%';d.innerHTML='<i>'+((i+1)+'h')+'</i>';d.onclick=()=>toast('Signal window '+(i+1)+'h: '+v+' index');bars.appendChild(d)})
+}
+function renderMini(){
+ let box=document.getElementById('miniAlerts');
+ alerts.slice(0,4).forEach(a=>{let d=document.createElement('div');d.className='alert';d.onclick=()=>openAlert(a);d.innerHTML='<div class="alerttop"><b>'+a[0]+'</b><span class="risk r-'+a[5]+'">'+a[1]+'</span></div><small>'+a[2]+' • '+a[3]+' connected entities</small>';box.appendChild(d)})
+}
+function renderTable(){
+ let body=document.getElementById('alertTable');body.innerHTML='';
+ alerts.forEach(a=>{let tr=document.createElement('tr');tr.innerHTML=`<td><b>${a[0]}</b></td><td><span class="pill ${a[5]}">${a[1]}</span></td><td>${a[2]}</td><td>${a[3]}</td><td>${a[4]}</td><td><button class="btn" onclick='openAlert(${JSON.stringify(a)})'>Inspect</button></td>`;body.appendChild(tr)})
+}
+function openAlert(a){document.getElementById('modalTitle').textContent='Alert '+a[0];document.getElementById('modalText').innerHTML='<b>Risk score:</b> '+a[1]+'<br><br><b>Primary signal:</b> '+a[2]+'<br><br><b>Connected entities:</b> '+a[3]+'<br><br>This alert is a prioritisation signal. Investigators should verify the underlying evidence before taking action.';document.getElementById('modal').style.display='grid'}
+function filterAlerts(){document.querySelectorAll('#alertTable tr').forEach((tr,i)=>tr.style.display=alerts[i][1]>=70?'':'none');document.getElementById('alertCount').textContent='High-risk signals only'}
+function buildGraph(){
+ const el=document.getElementById('graphBox'); const ns='http://www.w3.org/2000/svg';let svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 700 290');
+ const nodes=[[350,145,'A-1042','#fb7185',26],[170,75,'A-8871','#fb7185',20],[170,215,'A-5520','#fbbf24',20],[530,70,'D-77','#22d3ee',18],[545,215,'B-91','#a78bfa',18],[350,45,'IP-41','#22d3ee',16],[350,245,'CASH-7','#fbbf24',18],[75,145,'A-2308','#fbbf24',17],[625,145,'A-7712','#34d399',17],[465,145,'M-12','#fb7185',15]];
+ const edges=[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,7],[2,6],[3,4],[4,8],[5,3],[6,4],[0,9],[9,4]];
+ edges.forEach((e,idx)=>{let l=document.createElementNS(ns,'line');l.classList.add('edge');if(idx<5||idx===12)l.classList.add('hot');l.setAttribute('x1',nodes[e[0]][0]);l.setAttribute('y1',nodes[e[0]][1]);l.setAttribute('x2',nodes[e[1]][0]);l.setAttribute('y2',nodes[e[1]][1]);l.setAttribute('stroke-dasharray','8 7');l.style.animation='dashMove 2s linear infinite';svg.appendChild(l)});
+ nodes.forEach((n,i)=>{let g=document.createElementNS(ns,'g');g.classList.add('node');let c=document.createElementNS(ns,'circle');c.setAttribute('cx',n[0]);c.setAttribute('cy',n[1]);c.setAttribute('r',n[4]);c.setAttribute('fill',n[3]);g.appendChild(c);let ring=document.createElementNS(ns,'circle');ring.setAttribute('cx',n[0]);ring.setAttribute('cy',n[1]);ring.setAttribute('r',n[4]+7);ring.setAttribute('fill','none');ring.setAttribute('stroke',n[3]);ring.setAttribute('opacity','.3');ring.style.animation='nodePulse 2s infinite';ring.style.animationDelay=(i*.12)+'s';g.appendChild(ring);let tx=document.createElementNS(ns,'text');tx.setAttribute('x',n[0]);tx.setAttribute('y',n[1]+n[4]+14);tx.textContent=n[2];g.appendChild(tx);g.onclick=()=>toast('Selected entity '+n[2]+' • graph evidence loaded');svg.appendChild(g)});el.appendChild(svg)
+}
+function calculate(){
+ const v=['velocity','amount','counter','graphRisk','device','cashout'].map(x=>+document.getElementById(x).value||0);
+ const weights=[.18,.15,.14,.23,.10,.20];let score=Math.round(v.reduce((a,x,i)=>a+x*weights[i],0));
+ document.getElementById('score').textContent=score;
+ let tier=score>=80?'CRITICAL':score>=65?'HIGH':score>=45?'MEDIUM':'LOW';
+ let col=score>=80?'#fb7185':score>=65?'#fbbf24':score>=45?'#22d3ee':'#34d399';
+ document.getElementById('tier').innerHTML='<b style="color:'+col+'">'+tier+' PRIORITY</b>';
+ document.getElementById('meter').style.width=score+'%';
+ document.getElementById('summary').textContent=score>=70?'Multiple strong signals require investigator review. Verify evidence and entity relationships.':'Current signals are below the high-priority threshold; continue monitoring and reassess with new events.';
+ let reasons=[['Graph exposure',v[3]],['Cash-out proximity',v[5]],['Transaction velocity',v[0]],['Amount deviation',v[1]],['Counterparty novelty',v[2]]];
+ document.getElementById('reasons').innerHTML=reasons.map(x=>'<div class="reason"><span>'+x[0]+'</span><b>'+x[1]+'/100</b></div>').join('');
+}
+function simulate(){
+ let old=+document.getElementById('mAlerts').textContent;document.getElementById('mAlerts').textContent=old+1;
+ toast('Synthetic transaction event ingested • new risk signal created');
+}
+function openCase(id){go('cases');toast('Loaded investigation '+id)}
+function renderChecks(){
+ let items=['Review transaction timeline','Validate device linkage','Inspect beneficiary relationships','Check prior case outcomes','Record investigator finding','Close / escalate case'];
+ document.getElementById('checks').innerHTML=items.map((x,i)=>`<label style="display:block;padding:10px 0;border-bottom:1px solid #17263a;font-size:10px;color:#dce7f4"><input type="checkbox" ${i<4?'checked':''} style="accent-color:#22d3ee;margin-right:9px"> ${x}</label>`).join('')
+}
+renderBars();renderMini();renderTable();buildGraph();renderChecks();calculate();
+
+const sampleCases=[
+["CASE-2026-041","A-1042","92","Rapid fan-out + cash-out","C-017","HIGH","Investigator Review"],
+["CASE-2026-040","A-8871","86","Shared device cluster","C-017","HIGH","Evidence Collection"],
+["CASE-2026-039","A-5520","78","New counterparties","C-021","HIGH","Queued"],
+["CASE-2026-038","A-2308","71","Velocity anomaly","C-021","HIGH","Queued"],
+["CASE-2026-037","A-7712","68","Beneficiary overlap","C-017","MEDIUM","Monitoring"],
+["CASE-2026-036","A-1904","54","Amount deviation","C-009","MEDIUM","Monitoring"],
+["CASE-2026-035","A-4410","49","Device novelty","C-009","MEDIUM","Monitoring"],
+["CASE-2026-034","A-9018","43","Peer deviation","C-031","LOW","Closed"],
+["CASE-2026-033","A-6621","83","Burst transfers","C-028","HIGH","Evidence Collection"],
+["CASE-2026-032","A-3055","76","Multi-hop movement","C-028","HIGH","Queued"],
+["CASE-2026-031","A-8104","64","Rapid beneficiary change","C-044","MEDIUM","Monitoring"],
+["CASE-2026-030","A-1177","88","Cash-out proximity","C-051","HIGH","Investigator Review"],
+["CASE-2026-029","A-9202","59","Geo/device mismatch","C-051","MEDIUM","Monitoring"],
+["CASE-2026-028","A-4320","47","Unusual timing","C-062","LOW","Closed"],
+["CASE-2026-027","A-5408","81","Linked mule cluster","C-062","HIGH","Evidence Collection"]
+];
+
+document.getElementById('appRoot').style.display='none';
+function showLogin(){document.getElementById('login').style.display='grid'}
+function hideLogin(){document.getElementById('login').style.display='none'}
+function enterApp(){if(!document.getElementById('loginId').value.trim()||!document.getElementById('loginPass').value.trim()){toast('Enter demo credentials');return}document.getElementById('login').style.display='none';document.getElementById('landing').style.display='none';document.getElementById('appRoot').style.display='flex';toast('Authenticated • Investigator session started')}
+function demoLogin(){document.getElementById('loginId').value='DEMO-INV-01';document.getElementById('loginPass').value='demo';enterApp()}
+
+function enhancedSimulate(){
+ const types=['Rapid fan-out','New device linkage','Cash-out proximity spike','Beneficiary change','Burst transfer'];
+ const type=types[Math.floor(Math.random()*types.length)],entity='A-'+Math.floor(1000+Math.random()*8999);
+ const n=document.getElementById('mAlerts');n.textContent=+n.textContent+1;
+ const mini=document.getElementById('miniAlerts');let d=document.createElement('div');d.className='alert';d.innerHTML='<div class="alerttop"><b>'+entity+'</b><span class="risk r-high">NEW</span></div><small>'+type+' • just now • EVT-'+Date.now()+'</small>';mini.prepend(d);toast('Synthetic event ingested • '+type);
+}
+window.simulate=enhancedSimulate;
+
+window.CYBER_API={
+ getAlerts:()=>alerts,getCases:()=>sampleCases,
+ score:(p)=>{let v=['velocity','amount','counter','graphRisk','device','cashout'].map(k=>+p[k]||0);return Math.round(v.reduce((a,x,i)=>a+x*[.18,.15,.14,.23,.10,.20][i],0))},
+ ingest:(e)=>({status:'accepted',event_id:'EVT-'+Date.now(),event:e})
+};
+
+function openCaseList(){
+ go('cases');let c=document.querySelector('#cases .case > .card:first-child');if(!c)return;
+ c.innerHTML='<div class="cardhead"><h3>Investigation cases</h3><span>15 demo cases</span></div><div style="overflow:auto"><table><thead><tr><th>CASE</th><th>ENTITY</th><th>RISK</th><th>SIGNAL</th><th>CLUSTER</th><th>PRIORITY</th><th>STATUS</th></tr></thead><tbody>'+
+ sampleCases.map(x=>'<tr onclick="selectCase(\''+x[0]+'\')" style="cursor:pointer"><td><b>'+x[0]+'</b></td><td>'+x[1]+'</td><td><span class="pill '+(x[2]>=80?'red':x[2]>=60?'yellow':'green')+'">'+x[2]+'</span></td><td>'+x[3]+'</td><td>'+x[4]+'</td><td>'+x[5]+'</td><td>'+x[6]+'</td></tr>').join('')+
+ '</tbody></table></div>';
+}
+function selectCase(id){toast('Loaded '+id+' • evidence workspace ready')}
+
+function addChat(){
+ if(document.getElementById('chatPanel'))return;
+ const p=document.createElement('div');p.id='chatPanel';p.className='card';p.style='position:fixed;right:22px;bottom:22px;width:370px;z-index:30;box-shadow:0 20px 70px #0009';
+ p.innerHTML='<div class="cardhead"><h3>✦ Investigator AI Copilot</h3><button class="btn" onclick="this.parentElement.parentElement.remove()">×</button></div><div id="chatMsgs" style="height:250px;overflow:auto;padding:4px"></div><div style="display:flex;gap:7px;margin-top:9px"><input id="chatInput" placeholder="Ask about A-1042, graph, risk..." style="flex:1;background:#091526;border:1px solid #21334d;color:white;border-radius:8px;padding:9px"><button class="btn primary" onclick="sendChat()">Send</button></div>';
+ document.body.appendChild(p);botMsg('I’m the demo Investigator Copilot. Ask me about risk signals, connected entities, case evidence, or scoring logic.');
+}
+function botMsg(t){const b=document.getElementById('chatMsgs');if(!b)return;b.innerHTML+='<div style="background:#102238;border:1px solid #203852;padding:9px;border-radius:9px;margin:7px 0;font-size:10px;color:#cfe0f3"><b style="color:#22d3ee">AI</b><br>'+t+'</div>';b.scrollTop=b.scrollHeight}
+function userMsg(t){const b=document.getElementById('chatMsgs');b.innerHTML+='<div style="background:#0d1b2d;border:1px solid #1f3046;padding:9px;border-radius:9px;margin:7px 0;font-size:10px;text-align:right;color:#dbe8f5">'+t+'</div>';b.scrollTop=b.scrollHeight}
+function sendChat(){
+ const i=document.getElementById('chatInput'),q=i.value.trim();if(!q)return;userMsg(q);i.value='';
+ setTimeout(()=>{let l=q.toLowerCase(),a;
+ if(l.includes('a-1042')||l.includes('risk'))a='A-1042 currently has a <b>92</b> risk score. Main signals: rapid fan-out, high cash-out proximity, graph exposure and shared-device evidence. Verify underlying evidence before action.';
+ else if(l.includes('graph')||l.includes('cluster'))a='Cluster C-017 links accounts, devices and cash-out nodes. Strongest demo path: A-1042 → D-77 → CASH-7.';
+ else if(l.includes('score')||l.includes('model'))a='The demo engine combines velocity, amount deviation, counterparty novelty, graph exposure, device linkage and cash-out proximity using weighted signals.';
+ else if(l.includes('case'))a='There are 15 sample cases. CASE-2026-041 is the active high-priority investigation.';
+ else a='I can explain risk scores, graph relationships, alert evidence, case workflow and the predictive engine. Try: “Why is A-1042 high risk?”';
+ botMsg(a)},350);
+}
+function addCopilotButton(){let b=document.createElement('button');b.className='btn';b.textContent='✦ AI Copilot';b.onclick=addChat;document.querySelector('.top-actions').prepend(b)}
+addCopilotButton();
+
+</script>
+</body>
+</html>
